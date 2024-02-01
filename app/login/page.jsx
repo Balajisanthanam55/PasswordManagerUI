@@ -1,40 +1,58 @@
 "use client"
-import { useState } from 'react'
-import { signIn } from 'next-auth/react'
 
-export default function Login() {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+import SignInForm from "@/components/signin";
+import { useState } from "react";
+import SignUpForm from "@/components/signup";
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    const result = await signIn('credentials', {
-      redirect: false,
-      username,
-      password,
-    })
-    if (!result.error) {
-      // Redirect to user homepage upon successful login
-      // You can replace '/user' with your desired URL
-      window.location.href = '/userpage'
+
+const Login = () => {
+  const [type, setType] = useState("signIn");
+  const handleOnClick = text => {
+    if (text !== type) {
+      setType(text);
+      return;
     }
-  }
-
+  };
+  const containerClass =
+    "container " + (type === "signUp" ? "right-panel-active" : "");
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-      />
-      <button type="submit">Sign In</button>
-    </form>
-  )
+    <div >
+      <div className={containerClass} id="container">
+        <SignUpForm />
+        <SignInForm />
+        <div className="overlay-container">
+          <div className="overlay">
+            <div className="overlay-panel overlay-left">
+              <h1>Welcome Back!</h1>
+              <p className="text_center">
+                Please login to access the Passwords
+              </p>
+              <br></br>
+              <button
+                className="ghost"
+                id="signIn"
+                onClick={() => handleOnClick("signIn")}
+              >
+                Sign In
+              </button>
+            </div>
+            <div className="overlay-panel overlay-right">
+              <h1>Welcome</h1>
+              <p className="text_center">Enter your details and start journey with us</p>
+              <br></br>
+              <button
+                className="ghost "
+                id="signUp"
+                onClick={() => handleOnClick("signUp")}
+              >
+                Sign Up
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
+
+export default Login

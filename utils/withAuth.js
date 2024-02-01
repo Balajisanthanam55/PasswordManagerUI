@@ -11,7 +11,7 @@ export default function withAuth(Component) {
 
     useEffect(() => {
       if (status === 'loading') return // Do nothing while session is loading
-      if (!session) router.push('/') // Redirect to login if no session
+      if (!session) router.push('/login') // Redirect to login if no session
     }, [session, status])
 
     // If user is authenticated, render the protected component

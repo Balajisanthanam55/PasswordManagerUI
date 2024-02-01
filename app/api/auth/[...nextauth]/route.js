@@ -10,13 +10,16 @@ const handler = NextAuth({
                 password: {  label: "Password", type: "password" }
             },
             authorize: async (credentials) => {
+               
+
+            
                 if (credentials.username === 'admin' && credentials.password === 'admin') {
                     // Any object returned will be saved in `user` property of the JWT
-                    
-                    return Promise.resolve({ username: 'admin' })
+                    const user = { id: "1", name: "J Smith", email: "jsmith@example.com" }
+                    return user
                   } else {
                     // If you return null or false, the credentials will be rejected
-                    return Promise.resolve(null)
+                    return null
                   }
             }
         })

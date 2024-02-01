@@ -1,30 +1,30 @@
 "use client";
 import Link from "next/link"
 import Image from "next/image"
-import { useState, useEffect } from "react"
-import {  signOut, useSession, getProviders } from 'next-auth/react'
+import { useState } from "react"
+import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from "next/navigation";
+import useranimation from "@/public/assets/lottieanimation/user.json"
+import Lottie from "lottie-react";
+
 const Nav = () => {
-    const isUserLoggedIn = false;
+
     const { data: session } = useSession();
-    const [providers, setProviders] = useState(null);
+    const [inlogipage, setinlogipage] = useState(false)
+
     const [toggleDropdown, settoggleDropdown] = useState(false);
 
     const router = useRouter();
 
-    const handleLogin =() => {
+    const handleLogin = () => {
+        setinlogipage(true);
         router.push('/login')
     };
-    useEffect(() => {
-        (async () => {
-          const res = await getProviders();
-          setProviders(res);
-        })();
-      }, []);
+
 
     return (
         <nav className="flex-between w-full mb-16 pt-3">
-            <Link href="/" className="flex gap-2 flex-center">
+            <Link href="/" className="flex gap-2 flex-center" onClick={() => { inlogipage(false) }}>
                 <Image
                     src="/assets/images/PasswordManagerLogo.svg"
                     alt="PasswordManager logo"
@@ -43,83 +43,91 @@ const Nav = () => {
                             Add Passwords
                         </Link>
 
-                        <button type="button" onClick={signOut} className="outline_btn" >
+                        <button type="button" onClick={() => {
+                            settoggleDropdown(false);
+                            setinlogipage(false);
+                            signOut({ redirect: true, callbackUrl: "/" });
+                        }} className="outline_btn" >
                             Log Out
                         </button>
                         <Link href="/profile">
-                            <Image
-                                src="/assets/images/logo.svg"
-                                width={60}
-                                height={60}
-                                className="rounded-full"
-                                alt="profile"/>
+
+                            <Lottie
+                                animationData={useranimation}
+                                autoplay={true}
+                                style={{ width: 60, height: 60 }} // Adjust size as needed
+                            />
+
                         </Link>
                     </div>
-                ) : (<>
-                    {providers &&
-                        Object.values(providers).map((provider) => (
-                            <button
-                                type="button"
-                                key={provider.name}
-                                onClick={() => handleLogin()}
-                                className="black_btn">
-                                Log IN
-                            </button>
-                        ))}
-                </>)}
+                ) : (
+                    inlogipage ? (
+                        <></>
+                    ) : (
+                        <button
+                            type="button"
+                            onClick={() => handleLogin()}
+                            className="black_btn"
+                        >
+                            Log IN
+                        </button>
+                    )
+
+
+                )}
             </div>
 
             {/* Mobile Navigation */}
             <div className="sm:hidden flex relative">
-                {isUserLoggedIn ? (
+                {session?.user ? (
                     <div className="flex">
-                        <Image
-                            src="/assets/images/logo.svg"
-                            width={60}
-                            height={60}
-                            className="rounded-full"
-                            alt="profile"
-                            onClick={()=> settoggleDropdown((prev)=> !prev)}/>
-                        
+                        <Lottie
+                            animationData={useranimation}
+                            autoplay={true}
+                            style={{ width: 60, height: 60 }} // Adjust size as needed
+
+                            onClick={() => { settoggleDropdown((prev) => !prev), setinlogipage(false) }} />
+
                         {toggleDropdown && (
                             <div className="dropdown">
                                 <Link
-                                   href="/profile"
-                                   className="dropdown_link"
-                                   onClick={()=> settoggleDropdown(false)} >
+                                    href="/profile"
+                                    className="dropdown_link"
+                                    onClick={() => settoggleDropdown(false)} >
                                     My Profile
                                 </Link>
                                 <Link
-                                   href="/SavePassword"
-                                   className="dropdown_link"
-                                   onClick={()=> settoggleDropdown(false)} >
+                                    href="/SavePassword"
+                                    className="dropdown_link"
+                                    onClick={() => settoggleDropdown(false)} >
                                     Add Password
                                 </Link>
-                                <button 
-                                    type="button" 
+                                <button
+                                    type="button"
                                     onClick={() => {
                                         settoggleDropdown(false);
-                                        signOut();
+                                        setinlogipage(false);
+                                        signOut({ redirect: true, callbackUrl: "/" });
                                     }}
                                     className="mt-5 w-full black_btn">
-                                        Log Out
+                                    Log Out
                                 </button>
-                            </div>    
+                            </div>
                         )}
                     </div>
-                ):(
-                    <>
-                    {providers &&
-                        Object.values(providers).map((provider) => (
-                            <button
-                                type="button"
-                                key={provider.name}
-                                onClick={() => handleLogin()}
-                                className="black_btn">
-                                Log IN
-                            </button>
-                        ))}
-                    </>
+                ) : (
+                    inlogipage ? (
+                        <></>
+                    ) : (
+                        <button
+                            type="button"
+                            onClick={() => handleLogin()}
+                            className="black_btn"
+                        >
+                            Log IN
+                        </button>
+                    )
+
                 )}
             </div>
         </nav>
