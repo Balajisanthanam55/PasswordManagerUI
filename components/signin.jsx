@@ -47,7 +47,7 @@ const SignInForm = () => {
     return (
         <div className="form-container sign-in-container">
             <form onSubmit={handleOnSubmit}>
-                <h1>Sign in</h1>
+                <h1 className="orange_gradient text_center">Sign in</h1>
                 <input
                    type="username"
                     placeholder="username"

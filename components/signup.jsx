@@ -46,7 +46,7 @@ const SignUpForm = () => {
   return (
     <div className="form-container sign-up-container">
       <form onSubmit={handleOnSubmit}>
-        <h1>Create Account</h1>
+        <h1 className='orange_gradient text_center'>Create Account</h1>
         <input
           type="text"
           name="name"
@@ -87,7 +87,7 @@ const SignUpForm = () => {
             style={{ display: "none" }} // Hide the input field
           />
           {!state.profileImage && (
-            <><p> Upload your profile (Optional)</p>
+            <><p className='text-center'> Upload your profile </p>
             <img
               src="/assets/images/user.png"
               alt="Profile"
