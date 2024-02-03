@@ -3,7 +3,7 @@ import { useSession,signOut } from 'next-auth/react'
 import withAuth from '@/utils/withAuth'
 const page = () => {
     const { data: session } = useSession()
-    console.log(session);
+    console.log(session.token);
     return (
       <div>
         <h1>Welcome, {session?.user?.name}</h1>

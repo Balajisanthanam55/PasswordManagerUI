@@ -6,21 +6,20 @@ import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from "next/navigation";
 import useranimation from "@/public/assets/lottieanimation/user.json"
 import Lottie from "lottie-react";
+import { useEffect } from "react";
 
 const Nav = () => {
 
     const { data: session } = useSession();
-    const [inlogipage, setinlogipage] = useState(false)
 
     const [toggleDropdown, settoggleDropdown] = useState(false);
 
     const router = useRouter();
 
     const handleLogin = () => {
-        setinlogipage(true);
         router.push('/login')
     };
-
+   
 
     return (
         <nav className="flex-between w-full mb-16 pt-3">
@@ -61,9 +60,7 @@ const Nav = () => {
                         </Link>
                     </div>
                 ) : (
-                    inlogipage ? (
-                        <></>
-                    ) : (
+                   
                         <button
                             type="button"
                             onClick={() => handleLogin()}
@@ -71,7 +68,7 @@ const Nav = () => {
                         >
                             Log IN
                         </button>
-                    )
+                   
 
 
                 )}
@@ -116,9 +113,7 @@ const Nav = () => {
                         )}
                     </div>
                 ) : (
-                    inlogipage ? (
-                        <></>
-                    ) : (
+                   
                         <button
                             type="button"
                             onClick={() => handleLogin()}
@@ -126,7 +121,7 @@ const Nav = () => {
                         >
                             Log IN
                         </button>
-                    )
+              
 
                 )}
             </div>
