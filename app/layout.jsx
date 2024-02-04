@@ -1,5 +1,5 @@
 import "@/styles/globals.css"
-import { Props } from "next/script"
+
 
 import Nav from "@/components/Nav"
 import Provide from "@/components/Provide"

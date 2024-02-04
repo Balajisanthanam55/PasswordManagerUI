@@ -44,7 +44,6 @@ const Nav = () => {
 
                         <button type="button" onClick={() => {
                             settoggleDropdown(false);
-                            setinlogipage(false);
                             signOut({ redirect: true, callbackUrl: "/" });
                         }} className="outline_btn" >
                             Log Out
@@ -103,7 +102,6 @@ const Nav = () => {
                                     type="button"
                                     onClick={() => {
                                         settoggleDropdown(false);
-                                        setinlogipage(false);
                                         signOut({ redirect: true, callbackUrl: "/" });
                                     }}
                                     className="mt-5 w-full black_btn">

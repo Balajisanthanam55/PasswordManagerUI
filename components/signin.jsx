@@ -62,7 +62,7 @@ const SignInForm = () => {
                     value={state.password}
                     onChange={handleChange}
                 />
-                <a href="#">Forgot your password?</a>
+                <a href="/forgotPassword">Forgot your password?</a>
                 <button >Sign In</button>
             </form>
         </div>

@@ -1,13 +1,30 @@
 "use client"
 import React from 'react';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 
 const SignUpForm = () => {
   const [state, setState] = React.useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
-    profileImage: null
   });
+  const [open, setOpen] = React.useState(false);
+  const [dialogContent, setDialogContent] = React.useState({
+    title: '',
+    text: '',
+  });
+ 
 
   const handleChange = evt => {
     const { name, value, type } = evt.target;
@@ -17,30 +34,45 @@ const SignUpForm = () => {
     }));
   };
 
-  const handleCancelUpload = () => {
-    // Reset the profileImage state to cancel the upload
-    setState(prevState => ({
-      ...prevState,
-      profileImage: null
-    }));
-  };
 
-  const handleOnSubmit = evt => {
+  const handleOnSubmit = async evt => {
     evt.preventDefault();
 
-    const { name, email, password, profileImage } = state;
-    console.log(profileImage)
-    alert(
-      `You are signing up with name: ${name}, email: ${email}, password: ${password}, and profile image: ${profileImage ? profileImage.name : "None"}`
-    );
+    const { username, email, password } = state;
+    const response = await fetch("http://localhost:8080/api/auth/signup", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ username, email, password })
+                });
 
-    // Reset form fields
-    setState({
-      name: "",
-      email: "",
-      password: "",
-      profileImage: null
-    });
+    if (response.ok) {
+    const responseData = await response.json();
+    if (responseData.id) {
+      setState({ username: "", email: "", password: "" });
+      setDialogContent({
+        title: 'Signup Successful',
+        text: 'Your account has been created successfully.',
+      });
+      setOpen(true);
+    } else if (responseData.Failed) {
+      
+      setDialogContent({
+        title: 'Signup Failed',
+        text: responseData.Failed,
+      });
+      setOpen(true);
+      
+    }          
+      } 
+    else {
+       // If the response is not successful, throw an error
+        throw new Error(`Signup failed with status: ${response.status}`);
+      }
+  };
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -49,10 +81,10 @@ const SignUpForm = () => {
         <h1 className='orange_gradient text_center'>Create Account</h1>
         <input
           type="text"
-          name="name"
-          value={state.name}
+          name="username"
+          value={state.username}
           onChange={handleChange}
-          placeholder="Name"
+          placeholder="username"
           required
         />
         <input
@@ -71,36 +103,25 @@ const SignUpForm = () => {
           placeholder="Password"
           required
         />
-        <label>
-          {state.profileImage && (
-            <img
-              src={URL.createObjectURL(state.profileImage)}
-              alt="Profile"
-              style={{ maxWidth: "150px", maxHeight: "150px" }}
-            />
-          )}
-          <input
-            type="file"
-            name="profileImage"
-            onChange={handleChange}
-            accept="image/*"
-            style={{ display: "none" }} // Hide the input field
-          />
-          {!state.profileImage && (
-            <><p className='text-center'> Upload your profile </p>
-            <img
-              src="/assets/images/user.png"
-              alt="Profile"
-              style={{ maxWidth: "150px", maxHeight: "150px" }} /></>
-          )}
-        </label>
-        {state.profileImage && (
-          <><button onClick={handleCancelUpload}>
-            Cancel Upload
-          </button><br /></>
-        )}
         <button>Sign Up</button>
       </form>
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{dialogContent.title}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            {dialogContent.text}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
